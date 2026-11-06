@@ -10,6 +10,11 @@
 export interface Project {
   id: string;
   title: string;
+  /** One-line description shown on the project still */
+  logline: string;
+  /** The single number that sums the project up, shown large */
+  figure: string;
+  figureLabel: string;
   category: 'All' | 'Power BI' | 'SQL' | 'Excel';
   tools: string[];
   summary: string;
@@ -84,12 +89,12 @@ My work bridges the gap between raw, unstructured numbers and strategic decision
   // Adeshewa's authentic professional studio portrait
   profileImage: "/assets/aistudio/WhatsApp_Image_2026-11-02_at_12.48.54_PM_8e48aacd.jpeg",
 
-  // Key hero counter metrics
+  // Headline figures shown under the hero, all drawn from the case studies
   kpis: [
-    { label: "Completed Projects", value: 5, suffix: "+" },
-    { label: "Core Analytics Tools", value: 4, suffix: "" },
-    { label: "Rows & Records Analyzed", value: 6500, suffix: "+" },
-    { label: "Data Accuracy & Integrity", value: 100, suffix: "%" }
+    { value: "5", label: "Power BI case studies" },
+    { value: "6,500+", label: "rows cleaned and modelled" },
+    { value: "₦5M", label: "of sales traced, two businesses" },
+    { value: "481", label: "survey responses analysed" }
   ]
 };
 
@@ -141,6 +146,9 @@ export const PROJECTS_DATA: Project[] = [
   {
     id: "fresh-mart-sales",
     title: "Fresh Mart Supermarket Analysis",
+    logline: "Where a supermarket's sales came from, broken down by branch, payment method and customer type.",
+    figure: "₦1M",
+    figureLabel: "sales across 100 orders",
     category: "Power BI",
     tools: ["Power BI", "Excel", "DAX", "Retail Analytics"],
     summary: "Sales performance overview dashboard tracking ₦1,000,000 in total revenue across 100 orders and 552 units. Includes breakdowns by customer type (Member vs Normal), payment method (Card 46.9%, Transfer 30.5%, Cash 22.6%), branch performance (Lagos, Ilorin, Abuja), and top product categories.",
@@ -163,7 +171,10 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     id: "glows-hr-report",
-    title: "Glow's Ventures And More HR Report",
+    title: "Glow's Ventures HR Report",
+    logline: "Why people leave a 43-person company, read by department, job role, tenure and overtime.",
+    figure: "0.09",
+    figureLabel: "attrition rate, 43 staff",
     category: "Power BI",
     tools: ["Power BI", "DAX", "Power Query", "HR Analytics"],
     summary: "Comprehensive human resources attrition report monitoring workforce retention across 43 employees. Evaluates attrition rate (0.09), average income (9.84), average monthly income (526.83K), and employee exits across departments, job roles, overtime frequency, and tenure bands.",
@@ -187,6 +198,9 @@ export const PROJECTS_DATA: Project[] = [
   {
     id: "social-media-addiction",
     title: "Social Media Addiction Analysis",
+    logline: "How many hours 481 people spend on social media each day, and how distracted it leaves them.",
+    figure: "116",
+    figureLabel: "people online 5+ hours a day",
     category: "Power BI",
     tools: ["Power BI", "Python", "Survey Analytics", "DAX"],
     summary: "Empirical survey analytics dashboard analyzing 481 respondents (211 Male, 263 Female, 7 non-binary/transgender/unsure). Investigates daily hours spent on social media, distraction levels, social comparison frequency, platform preferences, and age cohorts.",
@@ -209,7 +223,10 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     id: "poultry-farm-analytics",
-    title: "Poultry Farm Yield & Revenue Analysis",
+    title: "Poultry Farm Revenue Analysis",
+    logline: "Seven poultry products, seven sales channels, six ways to pay. Which ones carry the farm.",
+    figure: "₦4M",
+    figureLabel: "revenue in two months",
     category: "Power BI",
     tools: ["Power BI", "Excel", "Agri-Analytics", "DAX"],
     summary: "Operational and financial performance report tracking ₦4M in total revenue across 7 poultry product categories. Details monthly trends (September 3M / 69.15%, October 1M / 30.85%), platform sales (Instagram, Website, WhatsApp), and payment methods (Bank Transfer, Pay on Delivery, USSD, OPay, PalmPay).",
@@ -232,7 +249,10 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     id: "road-accident-analysis",
-    title: "Road Accident & Mortality Intelligence (2015-2023)",
+    title: "Road Accidents, 2015 to 2023",
+    logline: "Nine years of crash records, read for the years deaths peaked and how far they have fallen since.",
+    figure: "51K",
+    figureLabel: "accidents over nine years",
     category: "Power BI",
     tools: ["Power BI", "DAX", "Data Modeling", "Public Safety Analytics"],
     summary: "9-year longitudinal road safety and mortality report covering 2015 to 2023. Tracks 51K total road accidents, 98K deaths, and 84K injuries, analyzing annual injury-to-death ratios and accident frequency trends.",
@@ -264,7 +284,7 @@ export const TIMELINE_DATA: TimelineItem[] = [
     period: "2024 - Present",
     type: "Internship",
     status: "Currently Active",
-    description: "Hands-on Student Industrial Work Experience Scheme (SIWES) placement applying business intelligence, SQL querying, and dashboard design to live organizational datasets.",
+    description: "Student Industrial Work Experience Scheme (SIWES) placement. I work on the organisation's live data with SQL, Power Query and Power BI, alongside the tech team.",
     achievements: [
       "Building production-grade Power BI dashboards for operational and business intelligence reporting.",
       "Assisting in real-world data extraction, data cleansing with Power Query, and DAX metric formulation.",
@@ -279,7 +299,7 @@ export const TIMELINE_DATA: TimelineItem[] = [
     period: "2024",
     type: "Certification",
     status: "Certified",
-    description: "Rigorous professional data analytics program covering Excel modeling, Power BI dashboard architecture, relational SQL databases, and Python data analysis foundations.",
+    description: "Professional data analysis programme covering Excel modelling, Power BI report design, relational SQL databases and Python for analysis.",
     achievements: [
       "Graduated with top marks on capstone projects across retail, HR, and healthcare analytics.",
       "Mastered Star-Schema modeling, DAX time-intelligence functions, and ETL pipeline best practices.",
@@ -294,7 +314,7 @@ export const TIMELINE_DATA: TimelineItem[] = [
     period: "2021 - Present",
     type: "Education",
     status: "In Progress",
-    description: "Undergraduate curriculum building deep theoretical foundations in algorithms, database management systems (DBMS), statistical computation, software engineering, and systems logic.",
+    description: "Undergraduate degree covering algorithms, database management systems, statistics and software engineering.",
     achievements: [
       "Specializing coursework around Database Systems, Data Structures, Object-Oriented Programming, and Statistics.",
       "Actively applying computer science computational thinking to high-volume data analytics challenges.",
@@ -308,41 +328,41 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: "01",
     number: "STEP 01",
     title: "Collect",
-    description: "Auditing and aggregating data across relational databases, CSV spreadsheets, REST APIs, or survey responses, ensuring source integrity and metadata alignment.",
+    description: "Pull the data from wherever it lives: databases, spreadsheets, APIs or survey exports. Check where each column comes from before trusting it.",
     toolsUsed: ["SQL Server", "APIs", "Excel", "PostgreSQL"],
-    deliverable: "Raw Data Repositories & Extraction Pipeline"
+    deliverable: "Raw tables and a repeatable way to refresh them"
   },
   {
     step: "02",
     number: "STEP 02",
     title: "Clean",
-    description: "Performing robust ETL: eliminating duplicates, addressing null values, handling anomalies, standardizing datatypes, and shaping unstructured files for analysis.",
+    description: "Remove duplicates, fill or flag missing values, fix data types and spellings, and reshape messy files into tidy tables.",
     toolsUsed: ["Power Query", "Python (Pandas)", "SQL", "Excel"],
-    deliverable: "Normalized, Cleaned & Validated Datasets"
+    deliverable: "Clean tables I can vouch for"
   },
   {
     step: "03",
     number: "STEP 03",
     title: "Model",
-    description: "Designing efficient Star or Snowflake dimensional schemas, constructing one-to-many relationships, and engineering custom DAX measures and calculated columns.",
+    description: "Arrange the tables into a star schema with one fact table and its dimensions, link them by key, then write the DAX measures the report needs.",
     toolsUsed: ["Power BI Data Model", "DAX Studio", "Relational Keys"],
-    deliverable: "Optimized Dimensional Data Model"
+    deliverable: "A fast data model with tested measures"
   },
   {
     step: "04",
     number: "STEP 04",
     title: "Visualize",
-    description: "Crafting intuitive, accessible dashboards with clear visual hierarchies, interactive slicers, drill-through pages, and executive KPI scorecards.",
+    description: "Build report pages that answer one question each: headline numbers at the top, the breakdown below, slicers and drill-through for anyone who wants more.",
     toolsUsed: ["Power BI", "Figma Prototyping", "Excel Dashboards"],
-    deliverable: "Interactive Business Intelligence Dashboards"
+    deliverable: "A Power BI report people can use on their own"
   },
   {
     step: "05",
     number: "STEP 05",
     title: "Recommend",
-    description: "Translating visual patterns into clear, quantified strategic recommendations that enable executives and operational managers to take immediate, high-confidence action.",
+    description: "Turn what the charts show into a few specific recommendations, each with the number behind it, written for the person who has to act.",
     toolsUsed: ["Executive Presentations", "Data Storytelling", "KPI Summaries"],
-    deliverable: "Actionable Insights & Decision Roadmap"
+    deliverable: "A short list of findings and what to do next"
   }
 ];
 

@@ -1,182 +1,116 @@
-import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, Printer, Mail, MapPin } from 'lucide-react';
+import React from 'react';
+import { Printer, X } from 'lucide-react';
 import { PERSONAL_INFO, SKILLS_DATA, TIMELINE_DATA, PROJECTS_DATA } from '../data/portfolioData';
+import { Sheet } from './Sheet';
 
 interface ResumeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+const H: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <h2 className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-[#8a6a2e] border-b border-black/10 pb-2 mb-4">
+    {children}
+  </h2>
+);
 
-  if (!isOpen) return null;
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 lg:p-8">
-        
-        {/* Backdrop Scrim */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-[#0A0E17]/85 backdrop-blur-md"
-        />
-
-        {/* Modal Sheet */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl bg-white text-slate-900 border border-slate-300 shadow-2xl z-10 print:m-0 print:p-0 print:border-none print:shadow-none"
+export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => (
+  <Sheet open={isOpen} onClose={onClose} label="Curriculum vitae" tone="paper">
+    <div className="print-hide sticky top-0 z-10 flex items-center justify-between gap-3 px-5 md:px-12 h-14 md:h-16 bg-[#f6f2ea]/95 backdrop-blur border-b border-black/10">
+      <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-black/50">Curriculum vitae</span>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-2 h-10 px-4 rounded-full text-sm text-[#141a2a] hover:bg-black/5 cursor-pointer"
         >
-          {/* Header Bar */}
-          <div className="sticky top-0 z-20 flex items-center justify-between px-6 py-3 bg-white/95 backdrop-blur-md border-b border-slate-200 print:hidden">
-            <span className="text-xs font-mono font-medium text-slate-500">
-              Curriculum Vitae · {PERSONAL_INFO.name}
-            </span>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePrint}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Print / Save as PDF</span>
-              </button>
-
-              <button
-                onClick={onClose}
-                aria-label="Close CV preview"
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Printable Resume Content */}
-          <div className="p-6 sm:p-10 space-y-6 text-left">
-            
-            {/* Header: Name & Contact */}
-            <div className="border-b border-slate-200 pb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold font-heading text-slate-900">
-                {PERSONAL_INFO.name}
-              </h1>
-              <p className="text-sm font-semibold text-[#0284C7] mt-1">
-                Data Analyst · Power BI Developer · SQL Problem Solver
-              </p>
-              
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 font-mono">
-                <span className="flex items-center gap-1">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  {PERSONAL_INFO.email}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  {PERSONAL_INFO.location}
-                </span>
-                <span>GitHub: github.com/oyewoleadeshewa016-del</span>
-              </div>
-            </div>
-
-            {/* Professional Summary */}
-            <div>
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-2 border-b border-slate-200 pb-1">
-                Professional Profile
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                {PERSONAL_INFO.tagline} Detail-driven Computer Science undergraduate at Kwara State University, Malete, and Certified Data Analyst currently completing SIWES at Malhub, GRA Ilorin. Proven expertise in data extraction, ETL pipelines, DAX metrics, and production Power BI dashboards that clarify business-critical trends.
-              </p>
-            </div>
-
-            {/* Core Competencies */}
-            <div>
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-2 border-b border-slate-200 pb-1">
-                Technical Skills & Tools
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                {SKILLS_DATA.map((s) => (
-                  <div key={s.name} className="p-2 rounded bg-slate-50 border border-slate-200">
-                    <strong className="block text-slate-900">{s.name}</strong>
-                    <span className="text-[11px] text-slate-500">{s.proficiency}% Proficiency</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-slate-600 mt-2">
-                <strong>Methodologies:</strong> Star & Snowflake Schema Modeling, DAX Time Intelligence, Data Cleaning (ETL), Power Query, Window Functions, Exploratory Data Analysis (EDA), Executive Reporting.
-              </p>
-            </div>
-
-            {/* Experience & Training */}
-            <div>
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-3 border-b border-slate-200 pb-1">
-                Practical Experience & Certifications
-              </h2>
-              <div className="space-y-4">
-                {TIMELINE_DATA.map((t) => (
-                  <div key={t.id} className="text-xs">
-                    <div className="flex items-baseline justify-between">
-                      <h3 className="font-bold text-slate-900 text-sm">
-                        {t.title} – <span className="font-medium text-slate-700">{t.organization}</span>
-                      </h3>
-                      <span className="font-mono text-slate-500">{t.period}</span>
-                    </div>
-                    <p className="text-slate-500 italic mt-0.5">{t.location}</p>
-                    <p className="text-slate-700 mt-1">{t.description}</p>
-                    <ul className="mt-1 space-y-0.5 pl-4 list-disc text-slate-600">
-                      {t.achievements.map((a, i) => (
-                        <li key={i}>{a}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Key Projects Highlight */}
-            <div>
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-2 border-b border-slate-200 pb-1">
-                Key Analytics Projects
-              </h2>
-              <div className="space-y-2 text-xs">
-                {PROJECTS_DATA.slice(0, 4).map((p) => (
-                  <div key={p.id}>
-                    <span className="font-bold text-slate-900">{p.title} ({p.category}): </span>
-                    <span className="text-slate-700">{p.summary}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Footer Notice */}
-            <div className="pt-4 border-t border-slate-200 text-center text-[10px] text-slate-400 print:text-slate-500">
-              Referees & Full Academic Transcripts available on formal request · Kwara State University, Malete
-            </div>
-
-          </div>
-        </motion.div>
+          <Printer className="w-4 h-4" />
+          <span className="hidden sm:inline">Print or save as PDF</span>
+          <span className="sm:hidden">Print</span>
+        </button>
+        <button
+          onClick={onClose}
+          className="inline-flex items-center justify-center w-11 h-11 -mr-3 text-black/50 hover:text-black cursor-pointer"
+          aria-label="Close CV"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
-    </AnimatePresence>
-  );
-};
+    </div>
+
+    <div className="px-5 md:px-12 py-10 md:py-14 space-y-10 text-[#141a2a]">
+      <header>
+        <h1 className="font-display text-[clamp(2.25rem,7vw,3.5rem)] leading-[0.95] tracking-[-0.02em]">
+          {PERSONAL_INFO.name}
+        </h1>
+        <p className="mt-3 text-[#8a6a2e]">Data Analyst · Power BI · SQL · Excel · Python</p>
+        <p className="mt-4 text-sm text-black/65 flex flex-col sm:flex-row sm:flex-wrap gap-x-5 gap-y-1 font-mono break-all">
+          <span>{PERSONAL_INFO.email}</span>
+          <span>{PERSONAL_INFO.location}</span>
+          <span>github.com/oyewoleadeshewa016-del</span>
+        </p>
+      </header>
+
+      <section>
+        <H>Profile</H>
+        <p className="leading-relaxed text-black/80">
+          {PERSONAL_INFO.tagline} Computer Science undergraduate at Kwara State University, Malete, and certified
+          data analyst on SIWES placement at Malhub, GRA Ilorin. I clean and model business data with Power Query
+          and SQL, write DAX measures, and build Power BI reports that answer specific operational questions.
+        </p>
+      </section>
+
+      <section>
+        <H>Tools</H>
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+          {SKILLS_DATA.map((s) => (
+            <div key={s.name}>
+              <dt className="font-semibold">{s.name}</dt>
+              <dd className="text-sm text-black/65 leading-relaxed">{s.highlights.join(', ')}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-4 text-sm text-black/70 leading-relaxed">
+          <span className="font-semibold">Also:</span> star and snowflake schema modelling, DAX time intelligence,
+          ETL and data cleaning, window functions, exploratory analysis, executive reporting.
+        </p>
+      </section>
+
+      <section>
+        <H>Experience and education</H>
+        <div className="space-y-7">
+          {TIMELINE_DATA.map((t) => (
+            <div key={t.id}>
+              <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                <h3 className="font-semibold">
+                  {t.title} <span className="font-normal text-black/65">· {t.organization}</span>
+                </h3>
+                <span className="font-mono text-sm text-black/55 shrink-0">{t.period}</span>
+              </div>
+              <p className="text-sm text-black/55">{t.location}</p>
+              <ul className="mt-2 space-y-1 pl-5 list-disc text-sm text-black/75 leading-relaxed marker:text-[#8a6a2e]">
+                {t.achievements.map((a) => (
+                  <li key={a}>{a}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <H>Selected projects</H>
+        <ul className="space-y-4">
+          {PROJECTS_DATA.map((p) => (
+            <li key={p.id} className="text-sm leading-relaxed">
+              <span className="font-semibold">{p.title}.</span>{' '}
+              <span className="text-black/75">{p.logline}</span>{' '}
+              <span className="font-mono text-black/55">{p.metrics.slice(0, 2).join(' · ')}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <p className="pt-6 border-t border-black/10 text-xs text-black/50">References and transcripts available on request.</p>
+    </div>
+  </Sheet>
+);

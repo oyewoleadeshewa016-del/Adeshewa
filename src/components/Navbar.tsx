@@ -1,219 +1,184 @@
-import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, ArrowUpRight } from 'lucide-react';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface NavbarProps {
-  theme: 'dark' | 'light';
-  onToggleTheme: () => void;
-  onOpenGuide: () => void;
+  onOpenResume: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ theme, onToggleTheme, onOpenGuide }) => {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState('hero');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const LINKS = [
+  { id: 'about', label: 'About' },
+  { id: 'work', label: 'Work' },
+  { id: 'toolkit', label: 'Toolkit' },
+  { id: 'method', label: 'Method' },
+  { id: 'record', label: 'Record' },
+  { id: 'contact', label: 'Contact' },
+];
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('');
+  const [open, setOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Calculate scroll progress percentage
-      const totalScroll = document.documentElement.scrollTop;
-      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scroll = totalScroll / (windowHeight || 1);
-      setScrollProgress(scroll * 100);
-
-      // Section highlight detection
-      const sections = ['hero', 'about', 'skills', 'projects', 'experience', 'process', 'contact'];
-      for (const section of [...sections].reverse()) {
-        const el = document.getElementById(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 200) {
-            setActiveSection(section);
-            break;
-          }
-        }
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? y / max : 0);
+      let current = '';
+      for (const { id } of LINKS) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = id;
       }
+      setActive(current);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { label: 'About', href: '#about', id: 'about' },
-    { label: 'Skills', href: '#skills', id: 'skills' },
-    { label: 'Projects', href: '#projects', id: 'projects' },
-    { label: 'Experience', href: '#experience', id: 'experience' },
-    { label: 'Process', href: '#process', id: 'process' },
-    { label: 'Contact', href: '#contact', id: 'contact' },
-  ];
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
-  const handleNavClick = (href: string) => {
-    setMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+  const go = (id: string) => {
+    setOpen(false);
+    // let the menu close before scrolling so the body is unlocked
+    requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }));
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 transition-colors duration-300">
-      {/* Scroll Progress Bar in cool sky blue */}
-      <div className="w-full h-[2px] bg-transparent">
-        <div
-          className="h-full bg-[#38BDF8] transition-all duration-75 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
-      {/* Top Bar Glass Container */}
-      <div className="glass-nav border-b border-slate-200/50 dark:border-white/5 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
-          
-          {/* Zone 1: Single element Brand wordmark */}
+    <>
+      <header
+        className={`print-hide fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-500 ${
+          scrolled || open ? 'bg-ink/85 backdrop-blur-md border-b border-line' : 'bg-transparent border-b border-transparent'
+        }`}
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      >
+        <div className="gutter mx-auto max-w-[88rem] h-16 md:h-20 flex items-center justify-between gap-6">
           <a
             href="#hero"
             onClick={(e) => {
               e.preventDefault();
-              handleNavClick('#hero');
+              setOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex items-center gap-2.5 group whitespace-nowrap shrink-0 text-slate-900 dark:text-white"
+            className="flex items-center gap-3 min-h-11"
+            aria-label="Adeshewa Oyewole, back to top"
           >
-            <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center transition-transform duration-300 group-hover:border-[#38BDF8]">
-              <span className="font-heading text-xs font-bold text-[#38BDF8]">AO</span>
-            </div>
-            <span className="font-heading font-semibold text-base sm:text-lg tracking-tight group-hover:text-[#38BDF8] transition-colors">
-              {PERSONAL_INFO.preferredName}
-            </span>
+            <span className="font-display italic text-2xl leading-none text-ivory">A.O.</span>
+            <span className="hidden sm:inline label text-mist">Data Analyst</span>
           </a>
 
-          {/* Zone 2: Clean single-line text navigation links */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={link.id}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(link.href);
-                  }}
-                  className={`relative py-1 whitespace-nowrap shrink-0 transition-colors duration-200 ${
-                    isActive
-                      ? 'text-[#38BDF8] font-semibold'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Sections">
+            {LINKS.map((l) => (
+              <a
+                key={l.id}
+                href={`#${l.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  go(l.id);
+                }}
+                className={`relative text-sm tracking-wide transition-colors ${
+                  active === l.id ? 'text-ivory' : 'text-mist hover:text-ivory'
+                }`}
+              >
+                {l.label}
+                <span
+                  className={`absolute -bottom-1.5 left-0 h-px bg-brass transition-all duration-500 ease-cine ${
+                    active === l.id ? 'w-full' : 'w-0'
                   }`}
-                >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#38BDF8] rounded-full" />
-                  )}
-                </a>
-              );
-            })}
+                />
+              </a>
+            ))}
           </nav>
 
-          {/* Zone 3: 1 primary action + theme toggle */}
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Guide Button */}
+          <div className="flex items-center gap-2">
             <button
-              onClick={onOpenGuide}
-              title="Deployment & Editing Guide"
-              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors border border-slate-300/60 dark:border-white/10 cursor-pointer"
+              onClick={onOpenResume}
+              className="hidden sm:inline-flex items-center h-10 px-5 rounded-full border border-brass/50 text-brass-soft text-sm hover:bg-brass hover:text-ink transition-colors cursor-pointer"
             >
-              <span>Guide</span>
+              Read the CV
             </button>
-
-            {/* Dark / Light Toggle */}
             <button
-              onClick={onToggleTheme}
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-300/60 dark:border-white/10 transition-colors cursor-pointer"
+              onClick={() => setOpen((o) => !o)}
+              className="lg:hidden inline-flex items-center gap-3 h-11 pl-4 pr-3 -mr-3 text-ivory cursor-pointer"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
             >
-              {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-300" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-700" />
-              )}
-            </button>
-
-            {/* Primary Action Button */}
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick('#contact');
-              }}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-[#0284C7] hover:bg-[#0369A1] rounded-lg shadow-sm transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <span>Let's Talk</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
-
-            {/* Mobile menu toggle */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle navigation menu"
-              className="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <span className="label">{open ? 'Close' : 'Menu'}</span>
+              <span className="relative block w-6 h-3" aria-hidden="true">
+                <span
+                  className={`absolute left-0 right-0 h-px bg-ivory transition-all duration-500 ease-cine ${
+                    open ? 'top-1.5 rotate-45' : 'top-0'
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 right-0 h-px bg-ivory transition-all duration-500 ease-cine ${
+                    open ? 'top-1.5 -rotate-45' : 'top-3'
+                  }`}
+                />
+              </span>
             </button>
           </div>
-
         </div>
-      </div>
+        {/* reading progress */}
+        <div className="absolute left-0 bottom-0 h-px bg-brass/80 origin-left" style={{ width: '100%', transform: `scaleX(${progress})` }} />
+      </header>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden glass-nav border-b border-slate-200 dark:border-white/10 px-4 pt-3 pb-6 space-y-3 transition-colors duration-300">
-          <div className="flex flex-col space-y-2">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={link.id}
-                  href={link.href}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            className="print-hide fixed inset-0 z-30 bg-ink lg:hidden flex flex-col"
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 5rem)',
+              paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 2rem)',
+            }}
+          >
+            <nav className="gutter flex-1 flex flex-col justify-center" aria-label="Sections">
+              {LINKS.map((l, i) => (
+                <motion.a
+                  key={l.id}
+                  href={`#${l.id}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavClick(link.href);
+                    go(l.id);
                   }}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-sky-500/10 text-[#38BDF8] font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className={`py-2 font-display text-[clamp(2.5rem,12vw,4rem)] leading-[1.05] ${
+                    active === l.id ? 'italic text-brass-soft' : 'text-ivory'
                   }`}
                 >
-                  {link.label}
-                </a>
-              );
-            })}
-          </div>
-
-          <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenGuide();
-              }}
-              className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 py-1"
-            >
-              Guide & Deployment
-            </button>
-
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick('#contact');
-              }}
-              className="px-4 py-2 text-xs font-medium text-white bg-[#0284C7] rounded-lg"
-            >
-              Get in Touch
-            </a>
-          </div>
-        </div>
-      )}
-    </header>
+                  {l.label}
+                </motion.a>
+              ))}
+            </nav>
+            <div className="gutter flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  onOpenResume();
+                }}
+                className="h-12 rounded-full bg-brass text-ink font-medium cursor-pointer"
+              >
+                Read the CV
+              </button>
+              <p className="label text-mist text-center">Ilorin, Kwara State · WAT (UTC+1)</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
