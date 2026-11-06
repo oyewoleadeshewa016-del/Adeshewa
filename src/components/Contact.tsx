@@ -6,8 +6,11 @@ import { PERSONAL_INFO } from '../data/portfolioData';
 export const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [honey, setHoney] = useState('');
   const [error, setError] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
   const copy = async () => {
     try {
@@ -19,18 +22,48 @@ export const Contact: React.FC = () => {
     }
   };
 
-  // There is no mail server behind this site, so the form drafts the email in
-  // the visitor's own mail app rather than pretending to send it.
-  const compose = (e: React.FormEvent) => {
+  const mailtoFallback = () => {
+    const subject = `Portfolio message from ${name.trim()}`;
+    const body = `${message.trim()}\n\n${name.trim()}\n${email.trim()}`;
+    return `mailto:${PERSONAL_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  // Messages are delivered by FormSubmit (formsubmit.co), a free relay that
+  // emails each submission to the address below. The very first submission
+  // sends an "Activate Form" email to that inbox; nothing arrives until the
+  // link in it is clicked once.
+  const send = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) {
-      setError('Write a short message first, then open it in your email app.');
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setError('Fill in your name, email and message so I can reply.');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('That email address looks incomplete. Check it so I can reply.');
+      return;
+    }
+    if (honey) return; // bot filled the hidden field
     setError('');
-    const subject = name.trim() ? `Hello from ${name.trim()}` : 'Hello from your portfolio';
-    const body = name.trim() ? `${message.trim()}\n\n${name.trim()}` : message.trim();
-    window.location.href = `mailto:${PERSONAL_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setStatus('sending');
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          _subject: `Portfolio message from ${name.trim()}`,
+          _template: 'table',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) !== 'true') throw new Error(data.message || 'Send failed');
+      setStatus('sent');
+    } catch {
+      setStatus('idle');
+      setError('The message could not be sent from here. Use the email link above, or try again in a moment.');
+    }
   };
 
   return (
@@ -113,22 +146,70 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Draft-an-email form */}
-          <form onSubmit={compose} className="lg:col-span-6 min-w-0 flex flex-col gap-6" noValidate>
-            <div>
-              <label htmlFor="contact-name" className="label text-mist">
-                Your name
-              </label>
-              <input
-                id="contact-name"
-                type="text"
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-2 w-full h-12 bg-transparent border-0 border-b border-ivory/25 focus:border-brass focus:outline-none text-lg text-ivory placeholder:text-mist/60 transition-colors"
-                placeholder="Who's writing"
-              />
+          {/* Message form, delivered by email */}
+          {status === 'sent' ? (
+            <div className="lg:col-span-6 min-w-0 flex flex-col items-start gap-5 border-t border-line pt-8" role="status">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#7fd1a4]/15 text-[#7fd1a4]">
+                <Check className="w-5 h-5" />
+              </span>
+              <p className="font-display text-3xl md:text-4xl leading-tight">Message sent.</p>
+              <p className="text-mist leading-relaxed max-w-[44ch]">
+                Thanks, {name.trim().split(' ')[0]}. It's in my inbox, and I'll reply to {email.trim()}.
+              </p>
+              <button
+                onClick={() => {
+                  setStatus('idle');
+                  setMessage('');
+                }}
+                className="h-11 px-5 rounded-full border border-ivory/25 text-sm hover:border-ivory/60 transition-colors cursor-pointer"
+              >
+                Write another
+              </button>
             </div>
+          ) : (
+          <form onSubmit={send} className="lg:col-span-6 min-w-0 flex flex-col gap-6" noValidate>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="contact-name" className="label text-mist">
+                  Your name
+                </label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-2 w-full h-12 bg-transparent border-0 border-b border-ivory/25 focus:border-brass focus:outline-none text-lg text-ivory placeholder:text-mist/60 transition-colors"
+                  placeholder="Who's writing"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-email" className="label text-mist">
+                  Your email
+                </label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2 w-full h-12 bg-transparent border-0 border-b border-ivory/25 focus:border-brass focus:outline-none text-lg text-ivory placeholder:text-mist/60 transition-colors"
+                  placeholder="So I can reply"
+                />
+              </div>
+            </div>
+            {/* hidden from people, catches bots */}
+            <input
+              type="text"
+              name="_honey"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honey}
+              onChange={(e) => setHoney(e.target.value)}
+              className="hidden"
+              aria-hidden="true"
+            />
             <div>
               <label htmlFor="contact-message" className="label text-mist">
                 Message
@@ -143,21 +224,30 @@ export const Contact: React.FC = () => {
               />
             </div>
             {error && (
-              <p className="text-sm text-[#f0a2a2]" role="alert">
-                {error}
+              <p className="text-sm text-[#f0a2a2] leading-relaxed" role="alert">
+                {error}{' '}
+                {status === 'idle' && error.startsWith('The message') && (
+                  <a href={mailtoFallback()} className="underline underline-offset-4 text-ivory">
+                    Open it in your email app instead.
+                  </a>
+                )}
               </p>
             )}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button
                 type="submit"
-                className="group inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-brass text-ink font-medium hover:bg-brass-soft transition-colors cursor-pointer"
+                disabled={status === 'sending'}
+                className="group inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-brass text-ink font-medium hover:bg-brass-soft transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait"
               >
-                Open in your email app
-                <ArrowUpRight className="w-4 h-4 transition-transform duration-500 ease-cine group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                {status === 'sending' ? 'Sending…' : 'Send message'}
+                {status !== 'sending' && (
+                  <ArrowUpRight className="w-4 h-4 transition-transform duration-500 ease-cine group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                )}
               </button>
-              <p className="text-sm text-mist">Your message is drafted in your mail app for you to send.</p>
+              <p className="text-sm text-mist">Goes straight to my inbox.</p>
             </div>
           </form>
+          )}
         </div>
       </div>
     </section>
