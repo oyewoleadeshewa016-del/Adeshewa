@@ -28,10 +28,8 @@ export const Contact: React.FC = () => {
     return `mailto:${PERSONAL_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
-  // Messages are delivered by FormSubmit (formsubmit.co), a free relay that
-  // emails each submission to the address below. The very first submission
-  // sends an "Activate Form" email to that inbox; nothing arrives until the
-  // link in it is clicked once.
+  // Messages are delivered by Web3Forms, a free relay that emails each
+  // submission to the inbox tied to PERSONAL_INFO.web3formsKey.
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
@@ -44,21 +42,28 @@ export const Contact: React.FC = () => {
     }
     if (honey) return; // bot filled the hidden field
     setError('');
+    if (!PERSONAL_INFO.web3formsKey) {
+      // no delivery key configured yet: hand the message to the visitor's mail app
+      window.location.href = mailtoFallback();
+      return;
+    }
     setStatus('sending');
     try {
-      const res = await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
+          access_key: PERSONAL_INFO.web3formsKey,
+          subject: `Portfolio message from ${name.trim()}`,
+          from_name: name.trim(),
           name: name.trim(),
           email: email.trim(),
+          replyto: email.trim(),
           message: message.trim(),
-          _subject: `Portfolio message from ${name.trim()}`,
-          _template: 'table',
         }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || String(data.success) !== 'true') throw new Error(data.message || 'Send failed');
+      if (!res.ok || data.success !== true) throw new Error(data.message || 'Send failed');
       setStatus('sent');
     } catch {
       setStatus('idle');
@@ -99,9 +104,10 @@ export const Contact: React.FC = () => {
             <div className="mt-3 flex items-center gap-2 min-w-0">
               <a
                 href={PERSONAL_INFO.social.emailMailto}
-                className="min-w-0 font-display text-[clamp(1.25rem,4.6vw,2.25rem)] leading-tight break-all hover:text-brass-soft transition-colors select-all"
+                className="min-w-0 font-display text-[clamp(1.15rem,5vw,1.9rem)] leading-tight [overflow-wrap:anywhere] hover:text-brass-soft transition-colors"
               >
-                {PERSONAL_INFO.email}
+                {PERSONAL_INFO.email.split('@')[0]}
+                <wbr />@{PERSONAL_INFO.email.split('@')[1]}
               </a>
               <button
                 onClick={copy}

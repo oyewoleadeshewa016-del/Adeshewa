@@ -73,6 +73,10 @@ export const PERSONAL_INFO = {
   
 My work bridges the gap between raw, unstructured numbers and strategic decision-making. Whether architecting clean star-schemas in Power BI, writing complex SQL window queries, or building automated Python scripts, my priority is delivering high-impact clarity that stakeholders can trust.`,
   email: "oyewoleadeshewa016@gmail.com",
+  // Contact form delivery: get a free access key at https://web3forms.com
+  // (enter the email above, the key arrives in that inbox) and paste it here.
+  // While this is empty, the form opens the visitor's email app instead.
+  web3formsKey: "145aa1a7-93a8-41dd-a723-b927a6881ba0",
   phone: "+234 810 000 0000", // Placeholder for user
   location: "GRA Ilorin, Kwara State, Nigeria",
   university: "Kwara State University, Malete",
