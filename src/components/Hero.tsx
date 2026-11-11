@@ -136,8 +136,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
             >
               <p className="text-xl md:text-2xl leading-snug text-ivory">{PERSONAL_INFO.tagline}</p>
               <p className="mt-4 text-mist leading-relaxed">
-                Computer Science at Kwara State University, Malete. Certified at Malhub and now on SIWES
-                placement there, building Power BI reports from live business data with SQL, Excel and Python
+                Computer Science at Kwara State University, Malete. Certified at Malhub and now an intern
+                there, building Power BI reports from live business data with SQL, Excel and Python
                 underneath.
               </p>
 

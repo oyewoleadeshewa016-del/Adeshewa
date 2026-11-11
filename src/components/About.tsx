@@ -3,9 +3,9 @@ import { motion } from 'motion/react';
 import { SectionHead } from './SectionHead';
 
 const LEDGER = [
-  { k: 'Study', v: 'B.Sc. Computer Science', where: 'Kwara State University, Malete', when: '2021 – now' },
+  { k: 'Study', v: 'B.Sc. Computer Science', where: 'Kwara State University, Malete', when: '2023 – now' },
   { k: 'Certified', v: 'Data Analysis', where: 'Malhub Academy, GRA Ilorin', when: '2024' },
-  { k: 'Placement', v: 'Data Analyst Intern (SIWES)', where: 'Malhub, GRA Ilorin', when: '2024 – now' },
+  { k: 'Placement', v: 'Data Analysis Intern', where: 'Malhub, GRA Ilorin', when: '2025 – now' },
 ];
 
 const PRINCIPLES = [
@@ -35,7 +35,7 @@ export const About: React.FC = () => (
         <div className="lg:col-span-5 lg:pt-3 space-y-6 text-mist leading-relaxed max-w-[60ch]">
           <p>
             I study Computer Science at Kwara State University, Malete. After earning my data analysis
-            certificate at Malhub, I stayed on for my SIWES placement at their GRA Ilorin office, where I
+            certificate at Malhub, I became an intern at their GRA Ilorin office, where I
             clean, model and report on real organisational data.
           </p>
           <p>

@@ -69,7 +69,7 @@ export const PERSONAL_INFO = {
     "SQL Problem Solver",
     "Business Intelligence Specialist"
   ],
-  bioStory: `I am a Computer Science student at Kwara State University, Malete, with a passion for uncovering hidden business narratives within complex datasets. Having earned my professional Data Analysis certification at Malhub, I am currently gaining hands-on industry experience during my SIWES internship at Malhub, GRA Ilorin. 
+  bioStory: `I am a Computer Science student at Kwara State University, Malete, with a passion for uncovering hidden business narratives within complex datasets. Having earned my professional Data Analysis certification at Malhub, I am currently gaining hands-on industry experience as an intern at Malhub, GRA Ilorin.
   
 My work bridges the gap between raw, unstructured numbers and strategic decision-making. Whether architecting clean star-schemas in Power BI, writing complex SQL window queries, or building automated Python scripts, my priority is delivering high-impact clarity that stakeholders can trust.`,
   email: "oyewoleadeshewa016@gmail.com",
@@ -80,12 +80,12 @@ My work bridges the gap between raw, unstructured numbers and strategic decision
   phone: "+234 810 000 0000", // Placeholder for user
   location: "GRA Ilorin, Kwara State, Nigeria",
   university: "Kwara State University, Malete",
-  internship: "Malhub, GRA Ilorin (SIWES)",
+  internship: "Malhub, GRA Ilorin",
   
   // Social links (with Adeshewa's active GitHub repository profile)
   social: {
     github: "https://github.com/oyewoleadeshewa016-del?tab=repositories",
-    linkedin: "https://linkedin.com/in/adeshewa-oyewole",
+    linkedin: "https://www.linkedin.com/in/adeshewa-oyewole-4b6142405",
     twitter: "https://twitter.com/adeshewa_data",
     emailMailto: "mailto:oyewoleadeshewa016@gmail.com",
   },
@@ -281,14 +281,14 @@ export const PROJECTS_DATA: Project[] = [
 
 export const TIMELINE_DATA: TimelineItem[] = [
   {
-    id: "siwes-malhub",
-    title: "Data Analyst Intern (SIWES)",
+    id: "intern-malhub",
+    title: "Data Analysis Intern",
     organization: "Malhub",
     location: "GRA Ilorin, Kwara State",
-    period: "2024 - Present",
+    period: "2025 - Present",
     type: "Internship",
     status: "Currently Active",
-    description: "Student Industrial Work Experience Scheme (SIWES) placement. I work on the organisation's live data with SQL, Power Query and Power BI, alongside the tech team.",
+    description: "I work on the organisation's live data with SQL, Power Query and Power BI, alongside the tech team.",
     achievements: [
       "Building production-grade Power BI dashboards for operational and business intelligence reporting.",
       "Assisting in real-world data extraction, data cleansing with Power Query, and DAX metric formulation.",
@@ -315,7 +315,7 @@ export const TIMELINE_DATA: TimelineItem[] = [
     title: "B.Sc. Computer Science",
     organization: "Kwara State University (KWASU)",
     location: "Malete, Kwara State",
-    period: "2021 - Present",
+    period: "2023 - Present",
     type: "Education",
     status: "In Progress",
     description: "Undergraduate degree covering algorithms, database management systems, statistics and software engineering.",

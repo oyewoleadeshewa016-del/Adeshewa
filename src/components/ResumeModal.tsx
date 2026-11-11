@@ -47,6 +47,9 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
           <span>{PERSONAL_INFO.email}</span>
           <span>{PERSONAL_INFO.location}</span>
           <span>github.com/oyewoleadeshewa016-del</span>
+          <a href={PERSONAL_INFO.social.linkedin} target="_blank" rel="noreferrer noopener" className="underline">
+            {PERSONAL_INFO.social.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
+          </a>
         </p>
       </header>
 
@@ -54,7 +57,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
         <H>Profile</H>
         <p className="leading-relaxed text-black/80">
           {PERSONAL_INFO.tagline} Computer Science undergraduate at Kwara State University, Malete, and certified
-          data analyst on SIWES placement at Malhub, GRA Ilorin. I clean and model business data with Power Query
+          data analyst interning at Malhub, GRA Ilorin. I clean and model business data with Power Query
           and SQL, write DAX measures, and build Power BI reports that answer specific operational questions.
         </p>
       </section>
