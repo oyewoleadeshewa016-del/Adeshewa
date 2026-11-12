@@ -128,19 +128,56 @@ p {
 
 /* Printing the CV prints only the CV */
 @media print {
-  @page { margin: 14mm; }
-  html, body { background: #fff !important; }
+  @page { size: A4; margin: 8mm; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
   .grain::after { display: none; }
   .print-hide { display: none !important; }
+  .print-root {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
   .print-sheet {
     position: static !important;
+    height: auto !important;
     max-height: none !important;
+    min-height: 0 !important;
     overflow: visible !important;
     box-shadow: none !important;
     border: 0 !important;
+    border-radius: 0 !important;
     width: 100% !important;
     max-width: none !important;
     transform: none !important;
   }
-  .print-root { position: static !important; padding: 0 !important; display: block !important; }
+  .print-cv-content {
+    padding: 0 !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  .print-cv-content > :not(:last-child) { margin-block-end: 10px !important; }
+  .print-cv-content header h1 { font-size: 31px !important; line-height: 1 !important; }
+  .print-cv-content header p { margin-top: 5px !important; }
+  .print-cv-content header p:last-child {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 4px 14px !important;
+    font-size: 10px !important;
+  }
+  .print-cv-content section h2 { font-size: 10px !important; margin-bottom: 5px !important; padding-bottom: 3px !important; }
+  .print-cv-content section dl { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5px 14px !important; }
+  .print-cv-content section dl dd,
+  .print-cv-content section > p,
+  .print-cv-content section li { font-size: 11px !important; }
+  .print-cv-content section > p { margin-top: 5px !important; }
+  .print-cv-content section > .space-y-7 > :not(:last-child) { margin-block-end: 8px !important; }
+  .print-cv-content section li { line-height: 1.3 !important; }
+  .print-cv-content section ul { margin-top: 4px !important; padding-left: 17px !important; }
+  .print-cv-content section ul.space-y-4 > :not(:last-child) { margin-block-end: 6px !important; }
+  .print-cv-content > p:last-child { padding-top: 6px !important; font-size: 10px !important; }
 }
