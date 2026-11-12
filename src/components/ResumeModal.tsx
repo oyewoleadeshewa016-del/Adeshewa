@@ -37,7 +37,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
       </div>
     </div>
 
-    <div className="px-5 md:px-12 py-10 md:py-14 space-y-10 text-[#141a2a]">
+    <div className="print-cv-content px-5 md:px-12 py-10 md:py-14 space-y-10 text-[#141a2a]">
       <header>
         <h1 className="font-display text-[clamp(2.25rem,7vw,3.5rem)] leading-[0.95] tracking-[-0.02em]">
           {PERSONAL_INFO.name}

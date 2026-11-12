@@ -20,7 +20,7 @@ export default function App() {
   const openResume = () => setResumeOpen(true);
 
   return (
-    <div className="grain min-h-screen bg-ink text-ivory">
+    <div className="grain min-h-screen bg-ink text-ivory print-hide">
       <div className="print-hide">
         <Navbar onOpenResume={openResume} />
         <main>
